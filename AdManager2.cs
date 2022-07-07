@@ -19,10 +19,11 @@ namespace WordConnect
         [SerializeField] public string appKey = "fcb443747070ea8afe9734eef714538ef5dbdc57414d4eea";
         [SerializeField] bool isTesting;
 
-        public GameObject consentPanel = null;
-        private int consentShown;
-        private int consentAnswer;
-        private int removedAds;
+        public GameObject consentPanel = null; // My consent window gameObject
+        private int consentShown; // Checks if the consent window was shown at least once
+        private int consentAnswer; // Saves the user's answer, 1 for yes, and 0 for no - it is set to 1 by default
+        private int removedAds; // Checks if the user removed ads or not.
+        
         static int interstitialCount;
         public int interstitialShow;
 
@@ -32,7 +33,7 @@ namespace WordConnect
             consentAnswer = PlayerPrefs.GetInt("consentA", 1);
             removedAds = PlayerPrefs.GetInt("removedAds", 0);
 
-            if (PlayerPrefs.GetInt("consentV", consentShown) == 0)
+            if (PlayerPrefs.GetInt("consentV", consentShown) == 0)// if the consent panel was not shown on app launch it will activate it
             {
                 consentPanel.SetActive(true);
             }
@@ -61,14 +62,14 @@ namespace WordConnect
                 if (PlayerPrefs.GetInt("consentV", consentShown) == 0)
                     PlayerPrefs.SetInt("consentV", 1);
 
-                if (PlayerPrefs.GetInt("consentA", consentAnswer) == 1)
+                if (PlayerPrefs.GetInt("consentA", consentAnswer) == 1)// if the user accepted personalized ads
                 {
                     int adTypes = Appodeal.INTERSTITIAL | Appodeal.BANNER | Appodeal.REWARDED_VIDEO | Appodeal.MREC;
                     Appodeal.initialize(appKey, adTypes, (IAppodealInitializationListener)this);
                     Appodeal.updateCcpaConsent(Appodeal.CcpaUserConsent.OptIn);
                     Appodeal.updateGdprConsent(Appodeal.GdprUserConsent.Personalized);
                 }
-                if (PlayerPrefs.GetInt("consentA", consentAnswer) == 0)
+                if (PlayerPrefs.GetInt("consentA", consentAnswer) == 0)// if the user declined personalized ads
                 {
                     int adTypes = Appodeal.INTERSTITIAL | Appodeal.BANNER | Appodeal.REWARDED_VIDEO | Appodeal.MREC;
                     Appodeal.initialize(appKey, adTypes, (IAppodealInitializationListener)this);
